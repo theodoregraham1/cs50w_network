@@ -2,12 +2,12 @@
 
 {% block body %}
     {% if user.is_authenticated %}
-        <div class="border m-3">
+        <div class="border col-md-4 m-3">
             <form action="{% url 'add' %}" method="post" class="m-3">
                 <h2>New Post</h2>
                 {% csrf_token %}
-                <textarea class="form-control new-post-box" placeholder="Write something!"></textarea>
-                <input type="submit" class="btn btn-primary">
+                <textarea class="form-control" rows=10 placeholder="Write something!">{% if text.value %}{{ form.text.value }}{% endif %}</textarea>
+                <input type="submit" class="btn btn-primary" value="Post">
             </form>
         </div>
     {% endif %}
