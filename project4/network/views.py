@@ -10,9 +10,9 @@ from .forms import NewPostForm
 
 
 def index(request):
-    messages.error(request, "Username already taken")
-
-    return render(request, "network/index.html")
+    return render(request, "network/index.html", {
+        "form": NewPostForm,
+    })
 
 
 def login_view(request):
@@ -28,9 +28,8 @@ def login_view(request):
             login(request, user)
             return HttpResponseRedirect(reverse("index"))
         else:
-            return render(request, "network/login.html", {
-                "message": "Invalid username and/or password."
-            })
+            messages.error(request, "Invalid username and/or password.")
+            return render(request, "network/login.html")
     else:
         return render(request, "network/login.html")
 
@@ -49,9 +48,8 @@ def register(request):
         password = request.POST["password"]
         confirmation = request.POST["confirmation"]
         if password != confirmation:
-            return render(request, "network/register.html", {
-                "message": "Passwords must match."
-            })
+            messages.error(request, "Passwords must match.")
+            return render(request, "network/register.html")
 
         # Attempt to create new user
         try:
@@ -60,10 +58,11 @@ def register(request):
         except IntegrityError:
             messages.error(request, "Username already taken")
 
-            return render(request, "network/register.html", {
-                "message": "Username already taken."
-            })
+            return render(request, "network/register.html")
+
+        messages.success(request, "Registration successful")
         login(request, user)
+
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
