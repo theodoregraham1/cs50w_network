@@ -72,11 +72,14 @@ def new_post(request):
     if request.method == "POST":
         form = NewPostForm(request.POST)
 
-        if form.is_valid():
-            form.save()
+        if not form.is_valid():
+            return render(request, "network/index.html", {
+                "form": form,
+            })
 
-            return ()
+        post = Post(user=request.user, text=form.cleaned_data["text"])
+        post.save()
 
-        return render(request, "network/index.html", {
-            "form": form,
-        })
+        messages.success(request, "Post created successfully")
+
+    return HttpResponseRedirect(reverse("index"))
