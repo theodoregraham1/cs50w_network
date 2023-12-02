@@ -1,13 +1,17 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+from .models import User, Post
+from .forms import NewPostForm
 
 
 def index(request):
+    messages.error(request, "Username already taken")
+
     return render(request, "network/index.html")
 
 
@@ -54,6 +58,8 @@ def register(request):
             user = User.objects.create_user(username, email, password)
             user.save()
         except IntegrityError:
+            messages.error(request, "Username already taken")
+
             return render(request, "network/register.html", {
                 "message": "Username already taken."
             })
@@ -64,3 +70,14 @@ def register(request):
 
 
 def new_post(request):
+    if request.method == "POST":
+        form = NewPostForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            return ()
+
+        return render(request, "network/index.html", {
+            "form": form,
+        })
