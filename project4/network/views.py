@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 
@@ -72,7 +72,9 @@ def new_post(request):
     if request.method == "POST":
         form = NewPostForm(request.POST)
 
+
         if not form.is_valid():
+            messages.error(request, "Post invalid")
             return render(request, "network/index.html", {
                 "form": form,
             })
@@ -83,3 +85,9 @@ def new_post(request):
         messages.success(request, "Post created successfully")
 
     return HttpResponseRedirect(reverse("index"))
+
+
+def get_posts(request):
+    posts = Post.objects.all()
+    posts = posts.order_by("-timestamp")
+    return JsonResponse([post.serialise() for post in posts], status=201, safe=False)

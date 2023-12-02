@@ -1,14 +1,17 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
+    <h1 class="text-center">All posts</h1>
     {% if user.is_authenticated %}
-        <div class="border col-md-4 m-3">
-            <form action="{% url 'add' %}" method="post" class="m-3">
-                <h2>New Post</h2>
+        <div class="border col-md-6 my-3 mx-auto">
+            <form action="{% url 'add' %}" method="post" class="m-2" id="new-post-form">
+                <h4>New Post</h4>
                 {% csrf_token %}
-                <textarea class="form-control" rows=10 placeholder="Write something!">{% if text.value %}{{ form.text.value }}{% endif %}</textarea>
+                {{ form.text }}
                 <input type="submit" class="btn btn-primary" value="Post">
             </form>
         </div>
     {% endif %}
+
+    <ul class="list-group" id="posts"></ul>
 {% endblock %}

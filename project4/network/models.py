@@ -11,3 +11,11 @@ class Post(models.Model):
     user = models.ForeignKey("User", related_name="posts", on_delete=models.CASCADE)
     text = models.TextField(max_length=300)
     timestamp = models.DateTimeField(auto_now=True)
+
+    def serialise(self):
+        return {
+            "id": self.id,
+            "user": self.user.username,
+            "text": self.text,
+            "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
+        }
