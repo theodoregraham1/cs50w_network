@@ -16,7 +16,7 @@ function add_post(post) {
 	const li = document.createElement("li")
 	li.className = "list-group-item mx-auto col-md-6"
 	li.innerHTML = `
-				<p><b>${post.user}</b></p>
+				<p><a href=""><b>${post.user}</b></a></p>
 				<p>${post.text}</p>
 				<p class="small">${post.timestamp}</p>
 		`

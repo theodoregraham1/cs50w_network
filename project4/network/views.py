@@ -91,3 +91,16 @@ def get_posts(request):
     posts = Post.objects.all()
     posts = posts.order_by("-timestamp")
     return JsonResponse([post.serialise() for post in posts], status=201, safe=False)
+
+
+def profile_view(request, username):
+    users = User.objects.all()
+
+    user = None
+    for u in users:
+        if u.username == username:
+            user = u
+
+    return render(request, "network/profile.html", {
+        "user": user
+    })
