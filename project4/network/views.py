@@ -102,5 +102,7 @@ def profile_view(request, username):
             user = u
 
     return render(request, "network/profile.html", {
-        "user": user
+        "user": user,
+        "followers_num": len(user.followers.all()),
+        "following_num": len(user.following.all())
     })

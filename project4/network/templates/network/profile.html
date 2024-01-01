@@ -1,0 +1,9 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    <h1 class="text-center">{{ user.username }}</h1>
+    <p class="text-center">
+        <b>Followers:</b> {{ followers_num }} <b>Following:</b> {{ following_num }}
+    </p>
+    <hr>
+{% endblock %}
