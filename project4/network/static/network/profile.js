@@ -1,9 +1,9 @@
-var profile_id;
+let profile_id;
 
 document.addEventListener("DOMContentLoaded", function () {
-	profile_id = JSON.parse(document.getElementById('profile_id').textContent);
-	console.log(profile_id);
-	load_filtered_posts("user", profile_id)
+	profile_id = JSON.parse(document.getElementById('profile_id').textContent)
+
+	make_posts()
 })
 
 function follow() {

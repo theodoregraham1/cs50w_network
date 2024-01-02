@@ -3,6 +3,12 @@
 
 {% block head %}
     <script src="{% static 'network/profile.js' %}"></script>
+    <script>
+        function make_posts() {
+	        load_filtered_posts("user", {{ profile.id }})
+        }
+    </script>
+
     {{ profile.id | json_script:"profile_id" }}
 {% endblock %}
 
@@ -22,7 +28,7 @@
         {% endif %}
     </div>
     <hr>
-    <div class="col text-center">
+    <div class="col">
         <ul class="list-group" id="posts"></ul>
     </div>
 {% endblock %}

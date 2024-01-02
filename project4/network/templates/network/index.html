@@ -3,8 +3,12 @@
 {% block head %}
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            load_posts();
+            make_posts()
         })
+
+        function make_posts() {
+			load_posts();
+        }
     </script>
 {% endblock %}
 
@@ -20,6 +24,11 @@
             </form>
         </div>
     {% endif %}
+    <hr>
 
+    <ul class="pagination">
+        <li class="page-item ml-auto"><button class="page-link" onclick="">Previous</button></li>
+        <li class="page-item mr-auto"><button class="page-link" onclick="">Next</button></li>
+    </ul>
     <ul class="list-group" id="posts"></ul>
 {% endblock %}

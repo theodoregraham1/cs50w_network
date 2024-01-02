@@ -1,33 +1,26 @@
-function load_filtered_posts(filter_type, filter_val) {
-	if (filter_type === "user") {
-		fetch(`../user/${filter_val}/posts`)
-			.then(response => response.json())
-			.then(posts => {
-				console.log(posts)
+let page_num = 0;
 
-				posts.forEach((post) => add_post(post))
-		})
+function load_filtered_posts(filter_type, filter_val) {
+	clear_page()
+	let requestStr;
+
+	if (filter_type === "user") {
+		requestStr = `../user/${filter_val}/posts`
+
 	} else if (filter_type === "following") {
 		if (filter_val) {
-			fetch(`../posts/following`)
-				.then(response => response.json())
-				.then(posts => {
-					console.log(posts)
-
-					posts.forEach((post) => add_post(post))
-				})
+			requestStr = `../posts/following`
 		}
+	} else {
+		requestStr = `../posts/following`
 	}
+	fetch(requestStr)
+			.then(response => response.json())
+			.then(posts => posts.forEach(post => add_post(post)))
 }
 
 function load_posts() {
-	fetch("posts")
-		.then(response => response.json())
-		.then(posts => {
-			console.log(posts)
-
-			posts.forEach((post) => add_post(post))
-		})
+	load_filtered_posts("", "")
 }
 
 function add_post(post) {
@@ -41,4 +34,13 @@ function add_post(post) {
 	document.getElementById("posts").append(li)
 
 	console.log("Added post: " + post.id)
+}
+
+function clear_page() {
+	document.getElementById("posts").innerHTML = ``
+}
+function previous_page() {
+	page_num --;
+
+	make_posts()
 }
