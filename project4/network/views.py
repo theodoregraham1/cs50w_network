@@ -107,7 +107,11 @@ def get_user_posts(request, profile_id):
 
 
 def get_following_posts(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("index"))
+
     following = request.user.following.all()
+
     posts = []
     for user in following:
         posts.extend(user.posts.all())
