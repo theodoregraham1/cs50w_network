@@ -1,5 +1,13 @@
 {% extends "network/layout.html" %}
 
+{% block head %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            load_posts();
+        })
+    </script>
+{% endblock %}
+
 {% block body %}
     <h1 class="text-center">All posts</h1>
     {% if user.is_authenticated %}

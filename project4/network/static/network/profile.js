@@ -1,9 +1,12 @@
-// document.getElementById("follow-btn").addEventListener("click", follow())
+
+document.addEventListener("DOMContentLoaded", function () {
+	const profile_id = JSON.parse(document.getElementById('profile_id').textContent);
+	console.log(profile_id);
+	load_filtered_posts("user", profile_id)
+})
 
 function follow() {
-	const user_id = JSON.parse(document.getElementById('profile_id').textContent);
-
-	fetch(`../follow/${user_id}`)
+	fetch(`../follow/${profile_id}`)
 		.then(response => response.json())
 		.then(response => {
 			show_follow_button(response["following"])
@@ -11,10 +14,10 @@ function follow() {
 
 			if (response["following"]) {
 				update_followers(1)
-				console.log(`Followed user with id: ${user_id}`)
+				console.log(`Followed user with id: ${profile_id}`)
 			} else {
 				update_followers(-1)
-				console.log(`Unfollowed user with id: ${user_id}`)
+				console.log(`Unfollowed user with id: ${profile_id}`)
 			}
 		})
 }

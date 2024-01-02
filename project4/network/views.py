@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 
@@ -72,7 +72,6 @@ def new_post(request):
     if request.method == "POST":
         form = NewPostForm(request.POST)
 
-
         if not form.is_valid():
             messages.error(request, "Post invalid")
             return render(request, "network/index.html", {
@@ -93,8 +92,25 @@ def get_posts(request):
     return JsonResponse([post.serialise() for post in posts], status=201, safe=False)
 
 
+def get_user_posts(request, profile_id):
+    # Returns the posts from a specific user
+
+    try:
+        profile = User.objects.get(id=profile_id)
+    except User.DoesNotExist:
+        return JsonResponse([], status=500)
+
+    posts = Post.objects.filter(user=profile)
+    posts = posts.order_by("-timestamp")
+
+    return JsonResponse([post.serialise() for post in posts], status=201, safe=False)
+
+
 def profile_view(request, username):
-    profile_user = User.objects.get(username=username)
+    try:
+        profile_user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return HttpResponseRedirect(reverse("index"))
 
     return render(request, "network/profile.html", {
         "profile": profile_user,

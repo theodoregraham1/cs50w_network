@@ -1,6 +1,14 @@
-document.addEventListener("DOMContentLoaded", function () {
-	load_posts();
-})
+function load_filtered_posts(filter_type, filter_val) {
+	if (filter_type === "user") {
+		fetch(`../user/${filter_val}/posts`)
+			.then(response => response.json())
+		.then(posts => {
+			console.log(posts)
+
+			posts.forEach((post) => add_post(post))
+		})
+	}
+}
 
 function load_posts() {
 	fetch("posts")

@@ -7,15 +7,22 @@
 {% endblock %}
 
 {% block body %}
-    <h1 class="text-center">{{ profile.username }}</h1>
+    <div class="col text-center">
+        <h1 >{{ profile.username }}</h1>
 
-    <div class="text-center">
-        <b>Followers:</b> <p id="follower-count" style="display: inline">{{ followers_num }}</p> <b>Following:</b> <p id="following-count" style="display: inline">{{ following_num }}</p>
+        <div>
+            <b>Followers:</b> <p id="follower-count" style="display: inline">{{ followers_num }}</p> <b>Following:</b> <p id="following-count" style="display: inline">{{ following_num }}</p>
+        </div>
+
+        <!-- Follow button -->
+        {% if request.user.id and request.user.id != profile.id %}
+            <div class="mt-2">
+                <button id="follow-btn" onclick="follow()" {% if not following %} class="btn btn-primary mx-auto">Follow{% else %}class="btn btn-secondary mx-auto">Unfollow{% endif %}</button>
+            </div>
+        {% endif %}
     </div>
-
-    <!-- Follow button -->
-    {% if request.user.id and request.user.id != profile.id %}
-        <button id="follow-btn" onclick="follow()" {% if not following %} class="btn btn-primary mx-auto">Follow{% else %}class="btn btn-secondary mx-auto">Unfollow{% endif %}</button>
-    {% endif %}
     <hr>
+    <div class="col text-center">
+        <ul class="list-group" id="posts"></ul>
+    </div>
 {% endblock %}
