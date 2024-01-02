@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block body %}
-    <h1 class="text-center">All posts</h1>
+    <h1 class="text-center mt-2">All posts</h1>
     {% if user.is_authenticated %}
         <div class="border col-md-6 my-3 mx-auto">
             <form action="{% url 'add' %}" method="post" class="m-2" id="new-post-form">
@@ -27,8 +27,8 @@
     <hr>
 
     <ul class="pagination">
-        <li class="page-item ml-auto"><button class="page-link" onclick="">Previous</button></li>
-        <li class="page-item mr-auto"><button class="page-link" onclick="">Next</button></li>
+        <li class="page-item ml-auto"><button id="page-previous-btn" class="page-link" onclick="">Previous</button></li>
+        <li class="page-item mr-auto"><button id="page-next-btn" class="page-link" onclick="">Next</button></li>
     </ul>
     <ul class="list-group" id="posts"></ul>
 {% endblock %}

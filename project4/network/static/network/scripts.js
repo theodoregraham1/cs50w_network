@@ -1,5 +1,8 @@
 let page_num = 0;
 
+document.addEventListener("DOMContentLoaded", function () {
+	document.getElementById("page-previous-btn").classList.add("disabled")
+})
 function load_filtered_posts(filter_type, filter_val) {
 	clear_page()
 	let requestStr;
@@ -12,11 +15,14 @@ function load_filtered_posts(filter_type, filter_val) {
 			requestStr = `../posts/following`
 		}
 	} else {
-		requestStr = `../posts/following`
+		requestStr = `../posts`
 	}
+
 	fetch(requestStr)
 			.then(response => response.json())
-			.then(posts => posts.forEach(post => add_post(post)))
+			.then(posts => {
+				posts.forEach(post => add_post(post))
+			})
 }
 
 function load_posts() {
