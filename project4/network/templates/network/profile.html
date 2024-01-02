@@ -1,9 +1,21 @@
 {% extends "network/layout.html" %}
+{% load static %}
+
+{% block head %}
+    <script src="{% static 'network/profile.js' %}"></script>
+    {{ profile.id | json_script:"profile_id" }}
+{% endblock %}
 
 {% block body %}
-    <h1 class="text-center">{{ user.username }}</h1>
-    <p class="text-center">
-        <b>Followers:</b> {{ followers_num }} <b>Following:</b> {{ following_num }}
-    </p>
+    <h1 class="text-center">{{ profile.username }}</h1>
+
+    <div class="text-center">
+        <b>Followers:</b> <p id="follower-count" style="display: inline">{{ followers_num }}</p> <b>Following:</b> <p id="following-count" style="display: inline">{{ following_num }}</p>
+    </div>
+
+    <!-- Follow button -->
+    {% if request.user.id and request.user.id != profile.id %}
+        <button id="follow-btn" onclick="follow()" {% if not following %} class="btn btn-primary mx-auto">Follow{% else %}class="btn btn-secondary mx-auto">Unfollow{% endif %}</button>
+    {% endif %}
     <hr>
 {% endblock %}

@@ -94,15 +94,29 @@ def get_posts(request):
 
 
 def profile_view(request, username):
-    users = User.objects.all()
-
-    user = None
-    for u in users:
-        if u.username == username:
-            user = u
+    profile_user = User.objects.get(username=username)
 
     return render(request, "network/profile.html", {
-        "user": user,
-        "followers_num": len(user.followers.all()),
-        "following_num": len(user.following.all())
+        "profile": profile_user,
+        "followers_num": len(profile_user.followers.all()),
+        "following_num": len(profile_user.following.all()),
+        "following": request.user in profile_user.followers.all(),
     })
+
+
+def follow(request, id):
+    # If the user is not following the profile of 'id' then follows them, else unfollows them
+
+    # Get profile user
+    try:
+        user = User.objects.get(id=id)
+    except User.DoesNotExist:
+        return JsonResponse([], status=500)
+
+    # Follow or unfollow
+    if request.user in user.followers.all():
+        user.followers.remove(request.user)
+    else:
+        user.followers.add(request.user)
+
+    return JsonResponse({"following": request.user in user.followers.all()}, status=201)
