@@ -100,8 +100,21 @@ def get_user_posts(request, profile_id):
     except User.DoesNotExist:
         return JsonResponse([], status=500)
 
-    posts = Post.objects.filter(user=profile)
+    posts = profile.posts
     posts = posts.order_by("-timestamp")
+
+    return JsonResponse([post.serialise() for post in posts], status=201, safe=False)
+
+
+def get_following_posts(request):
+    following = request.user.following.all()
+    posts = []
+    for user in following:
+        posts.extend(user.posts.all())
+
+    print(posts)
+    posts.sort(key=(lambda post: post.timestamp))
+    posts.reverse()
 
     return JsonResponse([post.serialise() for post in posts], status=201, safe=False)
 
@@ -136,3 +149,9 @@ def follow(request, id):
         user.followers.add(request.user)
 
     return JsonResponse({"following": request.user in user.followers.all()}, status=201)
+
+
+def following_view(request):
+    return render(request, "network/following.html", {
+        "form": NewPostForm,
+    })

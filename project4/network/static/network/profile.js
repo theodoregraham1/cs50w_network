@@ -1,6 +1,7 @@
+var profile_id;
 
 document.addEventListener("DOMContentLoaded", function () {
-	const profile_id = JSON.parse(document.getElementById('profile_id').textContent);
+	profile_id = JSON.parse(document.getElementById('profile_id').textContent);
 	console.log(profile_id);
 	load_filtered_posts("user", profile_id)
 })

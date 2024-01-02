@@ -1,0 +1,25 @@
+{% extends "network/layout.html" %}
+
+{% block head %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            load_filtered_posts("following", true);
+        })
+    </script>
+{% endblock %}
+
+{% block body %}
+    <h1 class="text-center">Following</h1>
+    {% if user.is_authenticated %}
+        <div class="border col-md-6 my-3 mx-auto">
+            <form action="{% url 'add' %}" method="post" class="m-2" id="new-post-form">
+                <h4>New Post</h4>
+                {% csrf_token %}
+                {{ form.text }}
+                <input type="submit" class="btn btn-primary" value="Post">
+            </form>
+        </div>
+    {% endif %}
+
+    <ul class="list-group" id="posts"></ul>
+{% endblock %}

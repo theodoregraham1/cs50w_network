@@ -2,11 +2,21 @@ function load_filtered_posts(filter_type, filter_val) {
 	if (filter_type === "user") {
 		fetch(`../user/${filter_val}/posts`)
 			.then(response => response.json())
-		.then(posts => {
-			console.log(posts)
+			.then(posts => {
+				console.log(posts)
 
-			posts.forEach((post) => add_post(post))
+				posts.forEach((post) => add_post(post))
 		})
+	} else if (filter_type === "following") {
+		if (filter_val) {
+			fetch(`../posts/following`)
+				.then(response => response.json())
+				.then(posts => {
+					console.log(posts)
+
+					posts.forEach((post) => add_post(post))
+				})
+		}
 	}
 }
 
