@@ -20,4 +20,5 @@ urlpatterns = [
     # Update data
     path("add", views.new_post, name="add"),
     path("follow/<int:id>", views.follow, name="follow"),
+    path("edit", views.edit_post, name="edit"),
 ]
