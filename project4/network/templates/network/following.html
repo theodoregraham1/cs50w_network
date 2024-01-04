@@ -2,24 +2,33 @@
 
 {% block head %}
     <script>
+
         document.addEventListener("DOMContentLoaded", function () {
-            load_filtered_posts("following", true);
+			make_posts()
         })
+
+        function make_posts() {
+			load_filtered_posts("following", true);
+        }
     </script>
 {% endblock %}
 
 {% block body %}
     <h1 class="text-center">Following</h1>
-    {% if user.is_authenticated %}
-        <div class="border col-md-6 my-3 mx-auto">
-            <form action="{% url 'add' %}" method="post" class="m-2" id="new-post-form">
-                <h4>New Post</h4>
-                {% csrf_token %}
-                {{ form.text }}
-                <input type="submit" class="btn btn-primary" value="Post">
-            </form>
-        </div>
-    {% endif %}
+    <div class="border col-md-6 my-3 mx-auto">
+        <form action="{% url 'add' %}" method="post" class="m-2" id="new-post-form">
+            <h4>New Post</h4>
+            {% csrf_token %}
+            {{ form.text }}
+            <input type="submit" class="btn btn-primary" value="Post">
+        </form>
+    </div>
+    <hr>
+
+    <ul class="pagination">
+        <li class="page-item ml-auto"><button id="page-previous-btn" class="page-link" onclick="previous_page()">Previous</button></li>
+        <li class="page-item mr-auto"><button id="page-next-btn" class="page-link" onclick="next_page()">Next</button></li>
+    </ul>
 
     <ul class="list-group" id="posts"></ul>
 {% endblock %}

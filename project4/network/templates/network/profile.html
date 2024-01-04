@@ -27,8 +27,15 @@
             </div>
         {% endif %}
     </div>
+
     <hr>
+
     <div class="col">
+        <ul class="pagination">
+            <li class="page-item ml-auto"><button id="page-previous-btn" class="page-link" onclick="previous_page()">Previous</button></li>
+            <li class="page-item mr-auto"><button id="page-next-btn" class="page-link" onclick="next_page()">Next</button></li>
+        </ul>
+
         <ul class="list-group" id="posts"></ul>
     </div>
 {% endblock %}

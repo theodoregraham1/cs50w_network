@@ -1,6 +1,8 @@
 const PREVIOUS_PAGE_BTN = "page-previous-btn";
 const NEXT_PAGE_BTN = "page-next-btn";
 
+const POSTS_PER_PAGE = 10;
+
 let page_num = 0;
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -25,9 +27,9 @@ function load_filtered_posts(filter_type, filter_val) {
 	fetch(requestStr)
 			.then(response => response.json())
 			.then(posts => {
-				let posts_to_display = posts.slice(page_num*10, (page_num+1)*10);
+				let posts_to_display = posts.slice(page_num * POSTS_PER_PAGE, (page_num+1) * POSTS_PER_PAGE);
 
-				if (posts_to_display.length < 10) {
+				if (posts_to_display.length < POSTS_PER_PAGE || posts.length === POSTS_PER_PAGE * (page_num+1)) {
 					disable_button(NEXT_PAGE_BTN)
 				} else {
 					activate_button(NEXT_PAGE_BTN)
