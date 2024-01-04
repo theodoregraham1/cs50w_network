@@ -4,6 +4,7 @@ from django.db import IntegrityError
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.utils.datastructures import MultiValueDictKeyError
 
 from .models import User, Post
 from .forms import NewPostForm
@@ -139,12 +140,14 @@ def profile_view(request, username):
 
 def follow(request, id):
     # If the user is not following the profile of 'id' then follows them, else unfollows them
+    if not request.user.is_authenticated:
+        return JsonResponse({}, status=511)
 
     # Get profile user
     try:
         user = User.objects.get(id=id)
     except User.DoesNotExist:
-        return JsonResponse([], status=500)
+        return JsonResponse({}, status=500)
 
     # Follow or unfollow
     if request.user in user.followers.all():
@@ -159,3 +162,32 @@ def following_view(request):
     return render(request, "network/following.html", {
         "form": NewPostForm,
     })
+
+
+def edit_post(request):
+    # Ensure the user is logged in
+    if not request.user.is_authenticated:
+        return JsonResponse({}, status=511)
+
+    # Ensure correct method used
+    if request.method != "POST":
+        return JsonResponse({}, status=500)
+
+    data = request.POST
+
+    # Get post
+    try:
+        post = Post.objects.get(id=data["post_id"])
+    except MultiValueDictKeyError:
+        return JsonResponse({}, status=500)
+    except Post.DoesNotExist:
+        return JsonResponse({}, status=500)
+
+    # Check whether the user is the one who made the post
+    if post.user != request.user:
+        return JsonResponse({}, status=511)
+
+    post.text = data["text"]
+    post.save()
+
+    return JsonResponse(post.serialise(), status=201)
