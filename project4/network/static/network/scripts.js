@@ -1,8 +1,12 @@
+const PREVIOUS_PAGE_BTN = "page-previous-btn";
+const NEXT_PAGE_BTN = "page-next-btn";
+
 let page_num = 0;
 
 document.addEventListener("DOMContentLoaded", function () {
-	document.getElementById("page-previous-btn").classList.add("disabled")
+	disable_button(PREVIOUS_PAGE_BTN)
 })
+
 function load_filtered_posts(filter_type, filter_val) {
 	clear_page()
 	let requestStr;
@@ -21,7 +25,15 @@ function load_filtered_posts(filter_type, filter_val) {
 	fetch(requestStr)
 			.then(response => response.json())
 			.then(posts => {
-				posts.forEach(post => add_post(post))
+				let posts_to_display = posts.slice(page_num*10, (page_num+1)*10);
+
+				if (posts_to_display.length < 10) {
+					disable_button(NEXT_PAGE_BTN)
+				} else {
+					activate_button(NEXT_PAGE_BTN)
+				}
+
+				posts_to_display.forEach(post => add_post(post))
 			})
 }
 
@@ -45,8 +57,45 @@ function add_post(post) {
 function clear_page() {
 	document.getElementById("posts").innerHTML = ``
 }
+
 function previous_page() {
 	page_num --;
 
-	make_posts()
+	if (page_num <= 0) {
+		disable_button(PREVIOUS_PAGE_BTN)
+	}
+
+	console.log("Going to page ", page_num)
+	make_posts();
+}
+
+function next_page() {
+	page_num ++;
+
+	activate_button(PREVIOUS_PAGE_BTN)
+
+	console.log("Going to page ", page_num)
+	make_posts();
+}
+
+function disable_button(id) {
+	let btn = document.getElementById(id);
+
+	btn.disabled = true;
+	btn.classList.add("disabled");
+	btn.tabIndex = -1;
+	btn.ariaDisabled = "true";
+
+	console.log("Disabled button: ", id)
+}
+
+function activate_button(id) {
+	let btn = document.getElementById(id);
+
+	btn.disabled = false;
+	btn.classList.remove("disabled");
+	btn.tabIndex = 1;
+	btn.ariaDisabled = "false";
+
+	console.log("Activated button: ", id)
 }
