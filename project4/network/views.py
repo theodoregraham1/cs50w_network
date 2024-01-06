@@ -88,9 +88,11 @@ def new_post(request):
 
 
 def get_posts(request):
+    # Return all posts
     posts = Post.objects.all()
     posts = posts.order_by("-timestamp")
-    return JsonResponse([post.serialise() for post in posts], status=201, safe=False)
+
+    return JsonResponse([post.serialise(request.user) for post in posts], status=201, safe=False)
 
 
 def get_user_posts(request, profile_id):
@@ -104,10 +106,13 @@ def get_user_posts(request, profile_id):
     posts = profile.posts
     posts = posts.order_by("-timestamp")
 
-    return JsonResponse([post.serialise() for post in posts], status=201, safe=False)
+    return JsonResponse([post.serialise(request.user) for post in posts], status=201, safe=False)
 
 
 def get_following_posts(request):
+    # Get posts from profiles the user is following
+
+    # Only allow authenticated users to access this
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("index"))
 
@@ -121,7 +126,7 @@ def get_following_posts(request):
     posts.sort(key=(lambda post: post.timestamp))
     posts.reverse()
 
-    return JsonResponse([post.serialise() for post in posts], status=201, safe=False)
+    return JsonResponse([post.serialise(request.user) for post in posts], status=201, safe=False)
 
 
 def profile_view(request, username):
@@ -148,6 +153,10 @@ def follow(request, id):
         user = User.objects.get(id=id)
     except User.DoesNotExist:
         return JsonResponse({}, status=500)
+
+    # Ensure user is not the same as the one they are trying to follow
+    if request.user == user:
+        return JsonResponse({}, status=511)
 
     # Follow or unfollow
     if request.user in user.followers.all():
@@ -191,3 +200,26 @@ def edit_post(request):
     post.save()
 
     return JsonResponse(post.serialise(), status=201)
+
+
+def like(request, post_id):
+    # Ensure the user is logged in
+    if not request.user.is_authenticated:
+        return JsonResponse({}, status=511)
+
+    # Find post
+    try:
+        post = Post.objects.get(id=post_id)
+    except Post.DoesNotExist:
+        return JsonResponse({}, status=500)
+
+    # Make sure user is not the post's maker
+    if request.user == post.user:
+        return JsonResponse({}, status=511)
+
+    if request.user in post.likes.all():
+        post.likes.remove(request.user)
+    else:
+        post.likes.add(request.user)
+
+    return JsonResponse({"liked": request.user in post.likes.all()}, status=201)

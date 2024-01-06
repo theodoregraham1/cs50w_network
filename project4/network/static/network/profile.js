@@ -25,6 +25,7 @@ function follow() {
 
 function show_follow_button(following) {
 	const btn = document.getElementById("follow-btn")
+
 	if (following) {
 		btn.classList.replace("btn-primary", "btn-secondary")
 		btn.innerText = "Unfollow"

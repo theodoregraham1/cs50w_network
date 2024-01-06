@@ -57,9 +57,26 @@ function add_post(post) {
 				<p id="post-text-${post.id}">${post.text}</p>
 				<p class="small">${post.timestamp}</p>
 		`;
+
+	// Add edit button
 	if (user_id === post.userid) {
-		li.innerHTML += `<button id="post-edit-${post.id}" class="badge badge-warning" onclick="open_edit_box(${post.id})">Edit</button>`;
+		li.innerHTML += `<button id="post-edit-${post.id}" class="badge badge-warning" onclick="open_edit_box(${post.id})">Edit</button><br>`;
 	}
+
+	// Like counter
+	let text_box = `<p class="inline"><b>Likes:</b> <p class="inline" id="post-like-counter-${post.id}">${post.likes}</p> `
+
+	// Like button
+	if (user_id != null && user_id !== post.userid) {
+		if (post.liked) {
+			text_box += `<button id="post-like-${post.id}" class="badge badge-danger inline" onclick="like(${post.id})">Liked</button>`;
+		} else {
+			text_box += `<button id="post-like-${post.id}" class="badge badge-secondary inline" onclick="like(${post.id})">Like</button>`;
+		}
+	}
+	text_box += `</p>`
+
+	li.innerHTML += text_box;
 
 	document.getElementById("posts").append(li)
 
@@ -158,4 +175,32 @@ function edit_post(post_id) {
 				li.innerHTML += `<button id="post-edit-${post.id}" class="badge badge-warning" onclick="open_edit_box(${post.id})">Edit</button>`;
 			}
 		})
+}
+
+function like(post_id) {
+	fetch(`../like/${post_id}`)
+		.then(response => response.json())
+		.then(response => {
+			const btn = document.getElementById(`post-like-${post_id}`)
+			if (response["liked"]) {
+				console.log("Liked post - ", post_id)
+
+				update_likes(1, post_id);
+
+				btn.classList.replace("badge-secondary", "badge-danger")
+				btn.innerText = "Liked"
+			} else {
+				console.log("Unliked post - ", post_id)
+
+				update_likes(-1, post_id);
+
+				btn.classList.replace("badge-danger", "badge-secondary")
+				btn.innerText = "Like"
+			}
+		})
+}
+
+function update_likes(increment, post_id) {
+	const like_counter = document.getElementById(`post-like-counter-${post_id}`);
+	like_counter.innerText = parseInt(like_counter.innerText) + increment;
 }
