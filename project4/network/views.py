@@ -199,7 +199,7 @@ def edit_post(request):
     post.text = data["text"]
     post.save()
 
-    return JsonResponse(post.serialise(), status=201)
+    return JsonResponse(post.serialise(request.user), status=201)
 
 
 def like(request, post_id):
